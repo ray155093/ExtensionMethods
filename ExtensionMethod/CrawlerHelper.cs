@@ -10,17 +10,13 @@ namespace ExtensionMethods
 {
     public static class CrawlerHelper
     {
-   
+
         /// <summary>
-        /// 發出一個Request並取回Response
+        ///發出一個Request並取回Response
         /// </summary>
         /// <param name="Url">服務網址</param>
-        /// <param name="HttpMethod">使用的httpMethod</param>
-        /// <param name="RequestContentType">Request的格式 正常來說應該是用[application/x-www-form-urlencoded]   /// 這邊列出四種
-        ///  1.[application/x-www-form-urlencoded]
-        //   2.[multipart/form data]
-        //   3.[application/json]
-        //   4.[text/plain]</param>
+        /// <param name="HttpMethod">The HTTP method.</param>
+        /// <param name="RequestContentType">Request的格式[application/x-www-form-urlencoded]、[multipart/form data]、[application/json]、[text/plain]</param>
         /// <param name="ParamStr">body資訊</param>
         /// <param name="EncodingType">編碼方式</param>
         /// <returns></returns>
