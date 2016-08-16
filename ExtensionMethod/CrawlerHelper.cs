@@ -50,7 +50,7 @@ namespace ExtensionMethods
                     sr.Close();
                 }
             }
-            catch (System.Net.WebException ex)
+            catch (System.Net.WebException)
             {
                 ResponseResultStr = "連線出現問題了";
             }

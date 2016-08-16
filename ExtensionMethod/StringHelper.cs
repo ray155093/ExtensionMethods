@@ -1,4 +1,7 @@
 ﻿using System;
+using ExtensionMethods.DataModel;
+using System.Web.Script.Serialization;
+using System.Text;
 
 namespace ExtensionMethods
 {
@@ -72,6 +75,51 @@ namespace ExtensionMethods
         public static string[] SplitByString(this string Str, string SplitStr)
         {
             return Str.Split(new string[] { SplitStr }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        /// <summary>
+        /// 用Richi資源取得統計區(不確定在那些網段可以用，公司可以)
+        /// </summary>
+        /// <param name="Str">The string.</param>
+        /// <param name="Address">地址</param>
+        /// <returns></returns>
+        public static AddrUnit GetAddrUnit (this  string Address)
+        {
+            //Arrange
+            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+            string sourceStr = "http://egis.moea.gov.tw/MoeaEGFxData/GetAddr/SearchAddr.ashx?addr="+Address;
+            //Action
+            string responseStr = sourceStr.GetResponseStr("GET", "[application/x-www-form-urlencoded]", "", Encoding.UTF8);
+            AddrXY addrXY = jsonSerializer.Deserialize<AddrXY>(responseStr);
+          
+            //一級、二級、三級劃設統計區(透過ArcGis，透過面回傳屬性資料)
+            string SearchCodeURL = @"http://124.219.79.204/arcgis/rest/services/EGIS/MoeaCode_TW/MapServer/1/query?geometry=";
+            // 是最小單元統計區(同上)
+            string SearchCodeBaseURL = @"http://124.219.79.158/arcgis/rest/services/MoeaCode_TW/MapServer/2/query?geometry=";
+            string GetCodeurl = SearchCodeURL;
+            string GetCodeBaseurl = SearchCodeBaseURL;
+            string Serice_CodePer = "&geometryType=esriGeometryPoint&spatialRel=esriSpatialRelIntersects&returnCountOnly=false&returnIdsOnly=false&returnGeometry=124,302false&f=json&outFields=COUN_ID,COUN_NA,TOWN_ID,TOWN_NA,CODE3,CODE2,CODE1";
+            string Serice_Codebaseper = "&geometryType=esriGeometryPoint&spatialRel=esriSpatialRelIntersects&returnCountOnly=false&returnIdsOnly=false&returnGeometry=false&f=json&outFields=CODEBASE";
+            AddrUnit resultAddrUnit = new AddrUnit();
+            string CodeServer_url = GetCodeurl + addrXY.X97 + "," + addrXY.Y97 + Serice_CodePer;
+            string CodebaseServer_url = GetCodeBaseurl + addrXY.X97 + "," + addrXY.Y97 + Serice_Codebaseper;
+            string ResultCodeServer_url = CodeServer_url.GetResponseStr("GET", CodeServer_url, "", Encoding.UTF8);
+            AddrCode addrCode = jsonSerializer.Deserialize<AddrCode>(ResultCodeServer_url);
+            string ResultCodebaseServer_url = CodebaseServer_url.GetResponseStr("GET", CodebaseServer_url, "", Encoding.UTF8);
+            AddrCodeBase addrCodeBase = jsonSerializer.Deserialize<AddrCodeBase>(ResultCodebaseServer_url);
+
+        
+            resultAddrUnit.COUN_ID = addrCode.features[0].attributes.COUN_ID.ToString().Trim();
+            resultAddrUnit.COUN_NA = addrCode.features[0].attributes.COUN_NA.ToString().Trim();
+            resultAddrUnit.TOWN_ID = addrCode.features[0].attributes.TOWN_ID.ToString().Trim();
+            resultAddrUnit.TOWN_NA = addrCode.features[0].attributes.TOWN_NA.ToString().Trim();
+            resultAddrUnit.CODE3 = addrCode.features[0].attributes.CODE3.ToString().Trim();
+            resultAddrUnit.CODE2 = addrCode.features[0].attributes.CODE2.ToString().Trim();
+            resultAddrUnit.CODE1 = addrCode.features[0].attributes.CODE1.ToString().Trim();
+            resultAddrUnit.CODEBASE = addrCodeBase.features[0].attributes.CODEBASE.ToString().Trim();
+
+            return resultAddrUnit;
+
         }
 
     }
