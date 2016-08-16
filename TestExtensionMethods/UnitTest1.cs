@@ -69,6 +69,10 @@ namespace TestExtensionMethods
             ////Assert
             //Assert.AreEqual(addrxy.COUN, addrxy);
         }
+        public static void 測試物件相等()
+        {
+            
+        }
         //Arrange
         //Action
         //Assert
