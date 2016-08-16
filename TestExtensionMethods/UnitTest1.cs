@@ -72,9 +72,6 @@ namespace TestExtensionMethods
         //Arrange
         //Action
         //Assert
-        public static void saa()
-        {
-            string sdjas = "";
-        }
+      
     }
 }
