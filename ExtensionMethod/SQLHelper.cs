@@ -13,15 +13,6 @@ namespace ExtensionMethods.Data
     /// </summary>
     public abstract class SQLHelper
     {
-
-        /// <summary>
-        /// default Database connection strings
-        /// </summary>
-        public static readonly string DefaultConnectionString =
-                System.Configuration.ConfigurationManager.AppSettings["DefaultConnName"] == null ? ""
-                    : System.Configuration.ConfigurationManager.ConnectionStrings[System.Configuration.ConfigurationManager.AppSettings["DefaultConnName"].ToString()].ConnectionString;
-
-
         #region GenerateSQLTransaction
         /// <summary>
         /// Generate a SqlTransaction against the database specified in the connection string.

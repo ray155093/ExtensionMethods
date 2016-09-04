@@ -38,7 +38,7 @@ namespace ExtensionMethods
         /// <typeparam name="T"></typeparam>
         /// <param name="dt"></param>
         /// <returns></returns>
-        public static IEnumerable<T> DataTableToEntities<T>(DataTable dt)
+        public static IEnumerable<T> DataTableToEntities<T>( this DataTable dt)
         {
             foreach (DataRow row in dt.Rows)
             {

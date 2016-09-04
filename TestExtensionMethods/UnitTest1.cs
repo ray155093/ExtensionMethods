@@ -4,6 +4,8 @@ using ExtensionMethods;
 using System.Text;
 using ExtensionMethods.DataModel;
 using System.Web.Script.Serialization;
+using System.Data;
+using System.Linq;
 
 namespace TestExtensionMethods
 {
@@ -124,7 +126,7 @@ namespace TestExtensionMethods
 
         }
         [TestMethod]
-        public  void 測試取得地址統計區()
+        public void 測試取得地址統計區()
         {
             //Arrange
             AddrUnit resultAddrUnit = new AddrUnit();
@@ -145,10 +147,60 @@ namespace TestExtensionMethods
         }
         public static void 測試物件相等()
         {
+            Class1 c1 = new Class1();
+            Class1 c1Cory = new Class1();
+            Class2 c2 = new Class2();
+            c2.ChildID = 21;
+            bool Iseqals= c1.Equals(c1Cory);
+            
+        }
+        [TestMethod]
+        public void 測試dt轉物件()
+        {
+            //Arrange
+            DataTable table = new DataTable("childTable");
+            DataColumn column;
+            DataRow row;
+            column = new DataColumn();
+            column.DataType = System.Type.GetType("System.Int32");
+            column.ColumnName = "ChildID";
+            column.AutoIncrement = true;
+            column.Caption = "ID";
+            column.ReadOnly = true;
+            column.Unique = true;
+            table.Columns.Add(column);
+            row = table.NewRow();
+            row["childID"] = 1;
+            table.Rows.Add(row);
+
+            //Action
+            Class2 o = table.DataTableToEntities<Class2>().First();
+
+            //Assert
+            Assert.AreEqual(o.ChildID, 1);
+
 
         }
-      
 
+        private class Class1
+        {
+            public int ParentID { get; set; }
+            public Class2 ChildID { get; set; }
+            public Class1()
+            {
+                this.ChildID = new Class2();
+
+            }
+
+        }
+        private class Class2
+        {
+            public int ChildID { get; set; }
+            public Class2()
+            {
+                this.ChildID = 1;
+            }
+        }
         //Arrange
         //Action
         //Assert
